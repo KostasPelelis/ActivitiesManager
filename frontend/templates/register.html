@@ -1,0 +1,28 @@
+<div class="register-form">
+    <form class="ui form">
+        {{#if error && error != ''}}
+        <div class="error">{{error}}</div>
+        {{/if}}
+        {{#if success && success != ''}}
+        <div class="success">{{{success}}}</div>
+        {{else}}
+        <div class="register-title">
+            <h2>Register!</h2>
+        </div>
+        <div id="username" class="ui fluid left icon input">
+            <i class="user icon"></i>
+            <input type="text" id="username" value="{{username}}" placeholder="Username"/>
+        </div>
+        <div id="email" class="ui fluid left icon input">
+            <i class="mail icon"></i>
+            <input type="email" id="email" value="{{email}}" placeholder="Email"/>
+        </div>
+        <div id="pwd" class="ui fluid left icon input">
+            <i class="lock icon"></i>
+            <input type="password" value="{{password}}" placeholder="Password"/>
+        </div>
+        <input type="button" class="fluid ui button" on-click="register" value="Submit"/>
+        {{/if}}
+    </form>
+</div>
+<footerTemplate/>
