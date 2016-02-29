@@ -20,6 +20,17 @@ body {
   background-color: #3fb0ac;
   font-family: Montserrat-Regular; }
 
+.ui.modal {
+  height: 50%; }
+
+.login-form {
+  margin: auto;
+  height: 100%;
+  width: 30%;
+  padding: 1em;
+  background-color: #3fb0ac;
+  font-family: Montserrat-Regular; }
+
 .ui.button {
   background-color: #173e43;
   color: white;

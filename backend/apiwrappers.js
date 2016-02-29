@@ -5,7 +5,7 @@ var _getDatabaseConnection = function(callback) {
         callback(_database);
         return;
     } else {
-        _MongoClient.connect('mongodb://127.0.0.1:27017/activitiesdb', function(err, db) {
+        _MongoClient.connect(process.env.ACTIVITIES_DB_URI, function(err, db) {
             if(err) {
                 throw err;
             }

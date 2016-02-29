@@ -50,5 +50,7 @@ gulp.task('watch',function() {
     gulp.watch('./static/css/*.css', ['minify']);
     gulp.watch('./frontend/templates/**/*.html', ['templates', 'jsfun']);
     gulp.watch('./frontend/js/app.js', ['jsfun']);
+    gulp.watch('./frontend/js/controlers/*.js', ['jsfun']);
+    gulp.watch('./frontend/js/models/*.js', ['jsfun']);
 });
 
