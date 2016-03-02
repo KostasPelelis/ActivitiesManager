@@ -1,6 +1,6 @@
 var
-    apiwrappers             = require('./apiwrappers'),
-    response               = require('./response'),
+    apiwrappers             = require('../apiwrappers'),
+    response               = require('../response'),
     bcrypt                  = require('bcrypt'),
     jsonwebtoken            = require('jsonwebtoken'),
     getDatabaseConnection   = apiwrappers.getDatabaseConnection,

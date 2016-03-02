@@ -33,9 +33,7 @@ window.onload = function() {
     Router
         .add('home', function() {
             var home = new Home();
-            var login = new Login();
             showPage(home);
-            showModel(login, 'login-container');
         })
         .add('register', function() {
             var reg = new Register();

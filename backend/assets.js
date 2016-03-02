@@ -6,21 +6,40 @@ var
 
 
 var mimes = {
-    'css': 'text/css',
-    'ttf': 'application/x-font-truetype',
-    'woff2': 'application/font-woff2',
-    'html': 'text/html',
-    'js': 'text/javascript',
-    'map': 'text/javascript',
-    'ico': 'image/icon',
-    'json': 'application/json',
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
+    '.css': 'text/css',
+    '.ttf': 'application/x-font-truetype',
+    '.woff2': 'application/font-woff2',
+    '.html': 'text/html',
+    '.js': 'text/javascript',
+    '.map': 'text/javascript',
+    '.ico': 'image/icon',
+    '.json': 'application/json',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.png': 'image/png',
 };
 
-var files = {};
 var disable_cache = true;
+
+var cache = {
+    store: {},
+    maxSize: 1024 * 1024 * 30,
+    maxAge: 1000 * 60 * 60,
+    cleanAfter: 1000 * 60 * 60 * 2,
+    cleanedAt: 0,
+    clean: function(now) {
+        if(now - this.cleanAfter > this.cleanedAt) {
+            console.log('Cleaning Cache');
+            this.cleanedAt = now;
+            var self = this;
+            Object.keys(this.store).forEach(function(file) {
+                if(now > self.store[file].timestamp + self.maxAge) {
+                    delete self.store[file];
+                }
+            });
+        }
+    }
+}
 
 module.exports = function(request, response) {
 
@@ -33,39 +52,57 @@ module.exports = function(request, response) {
         response.end(message);
     }
     
-    /* File Server */
-    var serve = function(file) {
-        var contentType = 'text/plain';
-        var fileExtension = file.ext.toLowerCase();
-        if(mimes[fileExtension] == undefined){
-            log.warn('Unknown file extension -> ' + fileExtension);
-        }
-        else {
-            contentType = mimes[fileExtension];
-        }
-        response.writeHead(200, {'Content-Type': contentType});
-        response.end(file.content);
-    }
-    
-    /* File Reader */
-    var readFile = function(filePath) {
-        if(files[filePath] && !disable_cache) {
-            serve(files[filePath]);
-        }
-        else {
-            fs.readFile(filePath, function(err,data) {
-                if(err) {
-                    console.error(err);
-                    sendError('Error While Reading File ' + filePath);
-                    return;
+    var streamFile = function(file) {
+        var stream = fs.createReadStream(file).once('open', function() {
+            response.writeHead(200, {'ContentType': mimes[path.extname(file)]});
+            console.log(mimes[path.extname(file)])
+            this.pipe(response);
+        })
+        .once('error', function(e) {
+            response.writeHead(500);
+            response.end('Server Error');
+        });
+
+        if(!disable_cache) {
+            fs.stat(file, function(err, stats) {
+                if(stats.size < cache.maxSize) {
+                    var bufferOffset = 0;
+                    cache.store[file] = {
+                        content: new Buffer(stats.size),
+                        timestamp: Date.now()
+                    };
+                    stream.on('data', function(data) {
+                        data.copy(cache.store[file].content, bufferOffset);
+                        bufferOffset += data.length;
+                    });
                 }
-                files[filePath] = {
-                    ext: filePath.split(".").pop(),
-                    content: data
-                }
-                serve(files[filePath]);
             });
         }
-    }
-    readFile(path.normalize(__dirname + '/..' + request.url));
+    };
+    
+    var serve = function(filePath) {
+        fs.exists(filePath, function(exists) {
+            if(exists) {
+                if(mimes[path.extname(filePath)]) {
+                    if(!disable_cache && cache.store[filePath]) {
+                        console.log('Found file ' + filePath + ' in cache');
+                        response.writeHead(200, {'ContentType': mimes[path.extname(filePath)]});
+                        response.end(cache.store[filePath].content);
+                    } else {
+                        console.log('Starting streaming session for file ' + filePath);
+                        streamFile(filePath)
+                    }
+
+                } else {
+                    sendError('Unsupported Mime ' + mimes[path.extname(filepath)], 500);    
+                }
+            } else {
+                response.writeHead(404);
+                response.end('Page Not Found');
+            }
+        });
+        cache.clean(Date.now());
+    };
+
+    serve(path.normalize(__dirname + '/..' + request.url));
 }

@@ -2,9 +2,9 @@ var
     jwt = require('jsonwebtoken')
     router = require('../frontend/js/lib/router')(),
     error = require('./apiwrappers').error,
-    response = require('./response'),
     authenticate = require('./api/auth'),
     users = require('./api/user'),
+    response = require('./response')
 ;
 
 

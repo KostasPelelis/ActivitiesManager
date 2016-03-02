@@ -2,21 +2,32 @@
 module.exports = Ractive.extend({
     template: require('../../templates/home'),
     components: {
+        loginTpl: require('./login'),
+        navBar: require('../views/navBar')
     },
     onrender: function() {
-        this.on('create', function(result, error) {
-            if(error) {
-                self.set('error', error.error);
-            } else {
-                self.set('error', false);
-                window.location.href = '/register';
+        this.on('addNewPlace', function() {
+            console.log('Adding new Place');
+            if(!userModel.isLogged()) {
+                $('.ui.modal')
+                    .modal({
+                        blurring: true
+                    })
+                    .modal('show');
             }
+        });
+        this.on('login', function() {
+            console.log('User Login Succesfully');
+            $('.ui.modal').modal('hide');
+        });
+        this.on('logout', function() {
+            
         });
         console.info('Home Page Rendered!');
     }
 });
 
-},{"../../templates/home":12}],2:[function(require,module,exports){
+},{"../../templates/home":13,"../views/navBar":11,"./login":2}],2:[function(require,module,exports){
 module.exports = Ractive.extend({
     template: require('../../templates/login'),
     components: {
@@ -42,7 +53,7 @@ module.exports = Ractive.extend({
     }
 });
 
-},{"../../templates/login":13,"../views/footer":10}],3:[function(require,module,exports){
+},{"../../templates/login":14,"../views/footer":10}],3:[function(require,module,exports){
 module.exports = Ractive.extend({
     template: require('../../templates/register'),
     components: {
@@ -67,7 +78,7 @@ module.exports = Ractive.extend({
     }
 });
 
-},{"../../templates/register":14,"../views/footer":10}],4:[function(require,module,exports){
+},{"../../templates/register":16,"../views/footer":10}],4:[function(require,module,exports){
 var 
     Router      = require('./lib/router')(),
     Register    = require('./controllers/register'),
@@ -103,9 +114,7 @@ window.onload = function() {
     Router
         .add('home', function() {
             var home = new Home();
-            var login = new Login();
             showPage(home);
-            showModel(login, 'login-container');
         })
         .add('register', function() {
             var reg = new Register();
@@ -503,12 +512,24 @@ module.exports = Ractive.extend({
 });
 
 
-},{"../../templates/footer":11,"../models/Version":8}],11:[function(require,module,exports){
+},{"../../templates/footer":12,"../models/Version":8}],11:[function(require,module,exports){
+module.exports = Ractive.extend({
+    onconstruct: function() {
+        var self = this;
+        self.set('name', userModel.get('userName'));
+        self.set('isLoggged', userModel.isLogged());
+    },
+    template: require('../../templates/navBar')
+});
+
+},{"../../templates/navBar":15}],12:[function(require,module,exports){
 module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"class":"footer"},"f":[{"t":7,"e":"div","a":{"class":"ui inverted vertical footer segment"},"f":[{"t":7,"e":"div","a":{"class":"ui horizontal list"},"f":[{"t":7,"e":"div","a":{"class":"item"},"f":[{"t":7,"e":"i","a":{"class":"large html5 centered icon"}}]}," ",{"t":7,"e":"div","a":{"class":"item"},"f":[{"t":7,"e":"i","a":{"class":"large css3 centered icon"}}]}]}]}]}]}
-},{}],12:[function(require,module,exports){
-module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"id":"login-container"},"f":[]}," ",{"t":7,"e":"div","a":{"class":"ui grid"},"f":[{"t":7,"e":"div","a":{"class":"two wide column"},"f":[]}," ",{"t":7,"e":"div","a":{"class":"four wide column"},"f":[{"t":7,"e":"h4","f":["ADD FRIENDS"]}," ",{"t":7,"e":"p","f":["Add the email of your friends you want to share your trip with"]}," ",{"t":7,"e":"div","a":{"class":"add-friends"},"f":[{"t":7,"e":"div","a":{"class":"ui input add"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Email or Username"}}]}," ",{"t":7,"e":"button","a":{"class":"ui blue button"},"f":["ADD"]}," ",{"t":7,"e":"div","a":{"class":"add-body"},"f":[{"t":7,"e":"p","f":["Friends So Far:"]}]}]}," ",{"t":7,"e":"h4","f":["ADD DESTINATION"]}," ",{"t":7,"e":"p","f":["Add the destinatons your trip is going to have"]}," ",{"t":7,"e":"div","a":{"class":"add-places"},"f":[{"t":7,"e":"p","f":["Search for your place"]}," ",{"t":7,"e":"div","a":{"class":"ui fluid icon input add-place"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Destination Name"}}," ",{"t":7,"e":"i","a":{"class":"inverted circular search link blue icon"}}]}," ",{"t":7,"e":"div","a":{"class":"ui grid"},"f":[{"t":7,"e":"div","a":{"class":"eight wide column start-date"},"f":[{"t":7,"e":"p","f":["Begin At:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"15/01/2016"}}," ",{"t":7,"e":"i","a":{"class":"calendar icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"eight wide column end-date"},"f":[{"t":7,"e":"p","f":["Leave At:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"27/02/2016"}}," ",{"t":7,"e":"i","a":{"class":"calendar icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"sixteen wide column end-date"},"f":[{"t":7,"e":"p","f":["We will travel with:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Transportation"}}," ",{"t":7,"e":"i","a":{"class":"plane icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"ten wide column end-date"},"f":[{"t":7,"e":"p","f":["Estimated Cost:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Cost"}}," ",{"t":7,"e":"i","a":{"class":"euro icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"eight wide column end-date"},"f":[{"t":7,"e":"button","a":{"class":"ui green button fluid"},"f":["ADD PLACE"]}]}]}]}]}," ",{"t":7,"e":"div","a":{"class":"ten wide column"},"f":[{"t":7,"e":"iframe","a":{"src":"https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d295111.11422058253!2d24.972747426560392!3d54.69984791098937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1456406421655","width":"853","height":"700","frameborder":"0","style":"border:0","allowfullscreen":0}}]}]}]}
 },{}],13:[function(require,module,exports){
-module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"class":"ui modal"},"f":[{"t":7,"e":"div","a":{"class":"login-form"},"f":[{"t":7,"e":"form","a":{"class":"ui form"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"error"},"f":[{"t":2,"r":"error"}]}],"n":50,"x":{"r":["error"],"s":"_0&&_0!=\"\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"success"},"f":[{"t":3,"r":"success"}]}],"n":50,"x":{"r":["success"],"s":"_0&&_0!=\"\""}},{"t":4,"n":51,"f":[{"t":7,"e":"div","a":{"class":"register-title"},"f":[{"t":7,"e":"h2","f":["Login"]}]}," ",{"t":7,"e":"div","a":{"id":"username","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"user icon"}}," ",{"t":7,"e":"input","a":{"type":"text","id":"username","value":[{"t":2,"r":"username"}],"placeholder":"Username"}}]}," ",{"t":7,"e":"div","a":{"id":"pwd","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"lock icon"}}," ",{"t":7,"e":"input","a":{"type":"password","value":[{"t":2,"r":"password"}],"placeholder":"Password"}}]}," ",{"t":7,"e":"input","a":{"type":"button","class":"fluid ui button","value":"Submit"},"v":{"click":"login"}}],"x":{"r":["success"],"s":"_0&&_0!=\"\""}}]}]}]}]}
+module.exports = {"v":3,"t":[{"t":7,"e":"navBar"}," ",{"t":7,"e":"div","a":{"class":"ui modal"},"f":[{"t":7,"e":"div","a":{"class":"ui secondary pointing fluid menu"},"f":[{"t":7,"e":"a","a":{"class":"active item login"},"f":["Login"]}," ",{"t":7,"e":"a","a":{"class":"item register"},"f":["Register"]}]}," ",{"t":7,"e":"loginTpl"}]}," ",{"t":7,"e":"div","a":{"class":"ui grid"},"f":[{"t":7,"e":"div","a":{"class":"two wide column"},"f":[]}," ",{"t":7,"e":"div","a":{"class":"four wide column"},"f":[{"t":7,"e":"h4","f":["ADD FRIENDS"]}," ",{"t":7,"e":"p","f":["Add the email of your friends you want to share your trip with"]}," ",{"t":7,"e":"div","a":{"class":"add-friends"},"f":[{"t":7,"e":"div","a":{"class":"ui input add"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Email or Username"}}]}," ",{"t":7,"e":"button","a":{"class":"ui blue button"},"f":["ADD"]}," ",{"t":7,"e":"div","a":{"class":"add-body"},"f":[{"t":7,"e":"p","f":["Friends So Far:"]}]}]}," ",{"t":7,"e":"h4","f":["ADD DESTINATION"]}," ",{"t":7,"e":"p","f":["Add the destinatons your trip is going to have"]}," ",{"t":7,"e":"div","a":{"class":"add-places"},"f":[{"t":7,"e":"p","f":["Search for your place"]}," ",{"t":7,"e":"div","a":{"class":"ui fluid icon input add-place"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Destination Name"}}," ",{"t":7,"e":"i","a":{"class":"inverted circular search link blue icon"}}]}," ",{"t":7,"e":"div","a":{"class":"ui grid"},"f":[{"t":7,"e":"div","a":{"class":"eight wide column start-date"},"f":[{"t":7,"e":"p","f":["Begin At:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"15/01/2016"}}," ",{"t":7,"e":"i","a":{"class":"calendar icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"eight wide column end-date"},"f":[{"t":7,"e":"p","f":["Leave At:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"27/02/2016"}}," ",{"t":7,"e":"i","a":{"class":"calendar icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"sixteen wide column end-date"},"f":[{"t":7,"e":"p","f":["We will travel with:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Transportation"}}," ",{"t":7,"e":"i","a":{"class":"plane icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"ten wide column end-date"},"f":[{"t":7,"e":"p","f":["Estimated Cost:"]}," ",{"t":7,"e":"div","a":{"class":"ui icon input fluid"},"f":[{"t":7,"e":"input","a":{"type":"text","placeholder":"Cost"}}," ",{"t":7,"e":"i","a":{"class":"euro icon"},"f":[]}]}]}," ",{"t":7,"e":"div","a":{"class":"eight wide column end-date"},"f":[{"t":7,"e":"button","a":{"class":"ui green button fluid"},"v":{"click":"addNewPlace"},"f":["ADD PLACE!"]}]}]}]}]}," ",{"t":7,"e":"div","a":{"class":"ten wide column"},"f":[{"t":7,"e":"iframe","a":{"src":"https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d295111.11422058253!2d24.972747426560392!3d54.69984791098937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1456406421655","width":"853","height":"700","frameborder":"0","style":"border:0","allowfullscreen":0}}]}]}]}
 },{}],14:[function(require,module,exports){
-module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"class":"register-form"},"f":[{"t":7,"e":"form","a":{"class":"ui form"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"error"},"f":[{"t":2,"r":"error"}]}],"n":50,"x":{"r":["error"],"s":"_0&&_0!=\"\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"success"},"f":[{"t":3,"r":"success"}]}],"n":50,"x":{"r":["success"],"s":"_0&&_0!=\"\""}},{"t":4,"n":51,"f":[{"t":7,"e":"div","a":{"class":"register-title"},"f":[{"t":7,"e":"h2","f":["Register!"]}]}," ",{"t":7,"e":"div","a":{"id":"username","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"user icon"}}," ",{"t":7,"e":"input","a":{"type":"text","id":"username","value":[{"t":2,"r":"username"}],"placeholder":"Username"}}]}," ",{"t":7,"e":"div","a":{"id":"email","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"mail icon"}}," ",{"t":7,"e":"input","a":{"type":"email","id":"email","value":[{"t":2,"r":"email"}],"placeholder":"Email"}}]}," ",{"t":7,"e":"div","a":{"id":"pwd","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"lock icon"}}," ",{"t":7,"e":"input","a":{"type":"password","value":[{"t":2,"r":"password"}],"placeholder":"Password"}}]}," ",{"t":7,"e":"input","a":{"type":"button","class":"fluid ui button","value":"Submit"},"v":{"click":"register"}}],"x":{"r":["success"],"s":"_0&&_0!=\"\""}}]}]}," ",{"t":7,"e":"footerTemplate"}]}
+module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"class":"login-form"},"f":[{"t":7,"e":"form","a":{"class":"ui form"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"error"},"f":[{"t":2,"r":"error"}]}],"n":50,"x":{"r":["error"],"s":"_0&&_0!=\"\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"success"},"f":[{"t":3,"r":"success"}]}],"n":50,"x":{"r":["success"],"s":"_0&&_0!=\"\""}},{"t":4,"n":51,"f":[{"t":7,"e":"div","a":{"class":"register-title"},"f":[{"t":7,"e":"h2","f":["Login"]}]}," ",{"t":7,"e":"div","a":{"id":"usr","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"user icon"}}," ",{"t":7,"e":"input","a":{"type":"text","id":"username","value":[{"t":2,"r":"username"}],"placeholder":"Username"}}]}," ",{"t":7,"e":"div","a":{"id":"pwd","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"lock icon"}}," ",{"t":7,"e":"input","a":{"type":"password","value":[{"t":2,"r":"password"}],"placeholder":"Password"}}]}," ",{"t":7,"e":"input","a":{"type":"button","class":"fluid ui button","value":"Submit"},"v":{"click":"login"}}],"x":{"r":["success"],"s":"_0&&_0!=\"\""}}]}]}]}
+},{}],15:[function(require,module,exports){
+module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"class":"ui secondary pointing menu"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"right menu"},"f":["Hello ",{"t":2,"r":"name"}]}," ",{"t":7,"e":"div","a":{"class":"right menu"},"f":[{"t":7,"e":"a","a":{"class":"ui item"},"f":["Logout"]}]}],"n":50,"r":"isLogged"}]}]}
+},{}],16:[function(require,module,exports){
+module.exports = {"v":3,"t":[{"t":7,"e":"div","a":{"class":"register-form"},"f":[{"t":7,"e":"form","a":{"class":"ui form"},"f":[{"t":4,"f":[{"t":7,"e":"div","a":{"class":"error"},"f":[{"t":2,"r":"error"}]}],"n":50,"x":{"r":["error"],"s":"_0&&_0!=\"\""}}," ",{"t":4,"f":[{"t":7,"e":"div","a":{"class":"success"},"f":[{"t":3,"r":"success"}]}],"n":50,"x":{"r":["success"],"s":"_0&&_0!=\"\""}},{"t":4,"n":51,"f":[{"t":7,"e":"div","a":{"class":"register-title"},"f":[{"t":7,"e":"h2","f":["Register!"]}]}," ",{"t":7,"e":"div","a":{"id":"username","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"user icon"}}," ",{"t":7,"e":"input","a":{"type":"text","id":"username","value":[{"t":2,"r":"username"}],"placeholder":"Username"}}]}," ",{"t":7,"e":"div","a":{"id":"email","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"mail icon"}}," ",{"t":7,"e":"input","a":{"type":"email","id":"email","value":[{"t":2,"r":"email"}],"placeholder":"Email"}}]}," ",{"t":7,"e":"div","a":{"id":"pwd","class":"ui fluid left icon input"},"f":[{"t":7,"e":"i","a":{"class":"lock icon"}}," ",{"t":7,"e":"input","a":{"type":"password","value":[{"t":2,"r":"password"}],"placeholder":"Password"}}]}," ",{"t":7,"e":"input","a":{"type":"button","class":"fluid ui button","value":"Submit"},"v":{"click":"register"}}],"x":{"r":["success"],"s":"_0&&_0!=\"\""}}]}]}]}
 },{}]},{},[4])

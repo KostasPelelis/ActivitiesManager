@@ -1,4 +1,10 @@
-<div id="login-container">
+<navBar/>
+<div class="ui modal">
+    <div class="ui secondary pointing fluid menu">
+        <a class="active item login">Login</a>
+        <a class="item register">Register</a> 
+    </div>
+    <loginTpl/>
 </div>
 <div class="ui grid">
     <div class="two wide column">
@@ -56,8 +62,8 @@
                 </div>
             </div>
             <div class="eight wide column end-date"> 
-                <button class="ui green button fluid">
-                    ADD PLACE
+                <button class="ui green button fluid" on-click="addNewPlace">
+                    ADD PLACE!
                 </button>
             </div>
             </div>

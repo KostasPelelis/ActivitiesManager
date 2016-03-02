@@ -1,7 +1,8 @@
-var
-    Ractive = require('ractive')
-;
-
 module.exports = Ractive.extend({
-    template: require('../../templates/navBar');
+    onconstruct: function() {
+        var self = this;
+        self.set('name', userModel.get('userName'));
+        self.set('isLoggged', userModel.isLogged());
+    },
+    template: require('../../templates/navBar')
 });
