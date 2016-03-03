@@ -1,5 +1,5 @@
 var
-    http    = require('http'),
+    https   = require('https'),
     Assets  = require('./backend/assets'),
     API     = require('./backend/api'),
     Default = require('./backend/default'),
@@ -17,10 +17,15 @@ var
     host = '127.0.0.1'
 ;
 
+const options = {
+    key: fs.readFileSync('.httpskeys/privkey.pem'),
+    cert: fs.readFileSync('.httpskeys/cert.pem')
+};
+
 var process = function (req, res) {
     console.log('[' + req.method + ']', req.url);
     Router.check(req.url, [req, res]); 
 }
 
-var app = http.createServer(process).listen(port, host);
+var app = https.createServer(options, process).listen(port, host);
 console.info('Server running on ' + host + ':' + port);
