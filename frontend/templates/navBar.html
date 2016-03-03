@@ -1,9 +1,9 @@
 <div class="ui secondary pointing menu">
 {{#if isLogged }}
     <div class="right menu">
-        Hello {{ name }}
-    </div>
-    <div class="right menu">
+        <a class="ui item">
+            Hello {{.name}}
+        </a>
         <a class="ui item">
             Logout
         </a>

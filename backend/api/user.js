@@ -9,8 +9,23 @@ var
     response                = require('../response')
 ;
 
-module.exports = function(req, res) {
+module.exports = function(req, res, params) {
     switch(req.method) {
+    case 'GET':
+        getDatabaseConnection(function(db) {
+            var query = {};
+            if(params && params.username) {
+                query = {"username": params.username};
+            }
+            db.collection('users').findOne(query, function(err, user){
+                response({
+                    user: {
+                        "username": user.username, 
+                    }
+                }, res);
+            });
+        });
+        break;
     case 'POST':
         processPOSTRequest(req, function(data) {
             if( !data.username ||

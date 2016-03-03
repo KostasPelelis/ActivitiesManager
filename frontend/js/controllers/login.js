@@ -1,7 +1,6 @@
 module.exports = Ractive.extend({
     template: require('../../templates/login'),
     components: {
-        footerTemplate: require('../views/footer')
     },
     onrender: function() {
         var self = this;

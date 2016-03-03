@@ -2,6 +2,7 @@ var
     apiwrappers             = require('../apiwrappers'),
     response               = require('../response'),
     bcrypt                  = require('bcrypt'),
+    crypto                  = require('crypto'),
     jsonwebtoken            = require('jsonwebtoken'),
     getDatabaseConnection   = apiwrappers.getDatabaseConnection,
     processPOSTrequest      = apiwrappers.processPOSTRequest,
@@ -13,6 +14,26 @@ _comparePwds = function(new_password, password, callback) {
         if(err) return callback(err);
         callback(null, isMatch);
     });
+}
+
+
+
+_updateUserToken = function(db, username, token, callback) {
+    var hashedToken = crypto.createHash('md5').update(token).digest('hex')
+    db.collection('users').updateOne(
+        {"username": username},
+        {
+            $set: {"auth:token": token},
+            $currentDate: {"lastModified": true}
+        }, function(err, results) {
+            if(err) {
+               callback(err, results); 
+            } else {
+                console.log('Updated user token');
+                callback(null, results);
+            }
+        }
+    );
 }
 
 _authenticate = function(data, res) {
@@ -35,11 +56,13 @@ _authenticate = function(data, res) {
                         var token = jsonwebtoken.sign(user, secret, {
                             expiresIn: (60 * 60 * 24)
                         });
-                        response({
-                            success: true,
-                            message: 'Succefully authenticated',
-                            token: token
-                        }, res);
+                        _updateUserToken(db, data.username, token, function(err, results) {
+                            response({
+                                success: true,
+                                message: 'Succefully authenticated',
+                                token: token
+                            }, res);
+                        });
                     }
                 });
             }

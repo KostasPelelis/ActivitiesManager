@@ -8,7 +8,8 @@ module.exports = Base.extend({
     data: {
         url: '/api/user',
         authURL: 'api/auth',
-        authToken: null
+        authToken: null,
+        name: ''
     },
     authenticate: function(callback) {
         var self = this;
@@ -30,18 +31,9 @@ module.exports = Base.extend({
         });
         return this;
     },
-    dummyRequest: function() {
+    getName: function() {
         var self = this;
-        if(self.isLogged()) console.log('Found active token');
-        ajax.request({
-            url: 'api',
-            method: 'GET',
-            headers: {'x-access-token': self.get('authToken')}
-        })
-        .done(function(result) {
-        })
-        .fail(function(xhr) {
-        });
+        return self.get('value.username');
     },
     logout: function() {
         var self = this;

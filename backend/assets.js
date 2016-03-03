@@ -23,9 +23,9 @@ var disable_cache = true;
 
 var cache = {
     store: {},
-    maxSize: 1024 * 1024 * 30,
-    maxAge: 1000 * 60 * 60,
-    cleanAfter: 1000 * 60 * 60 * 2,
+    maxSize: 1024 * 1024 * 30,          // 30 Mbs of cache
+    maxAge: 1000 * 60 * 60,             // 1 Hour max age
+    cleanAfter: 1000 * 60 * 60 * 2,     // Clean after 2 hours
     cleanedAt: 0,
     clean: function(now) {
         if(now - this.cleanAfter > this.cleanedAt) {
@@ -55,7 +55,6 @@ module.exports = function(request, response) {
     var streamFile = function(file) {
         var stream = fs.createReadStream(file).once('open', function() {
             response.writeHead(200, {'ContentType': mimes[path.extname(file)]});
-            console.log(mimes[path.extname(file)])
             this.pipe(response);
         })
         .once('error', function(e) {

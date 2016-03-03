@@ -9,13 +9,13 @@
         <div class="register-title">
             <h2>Login</h2>
         </div>
-        <div id="usr" class="ui fluid left icon input">
+        <div class="ui fluid left icon input">
             <i class="user icon"></i>
-            <input type="text" id="username" value="{{ username }}" placeholder="Username"/>
+            <input type="text" id="username" value="{{.username}}" placeholder="Username"/>
         </div>
-        <div id="pwd" class="ui fluid left icon input">
+        <div class="ui fluid left icon input">
             <i class="lock icon"></i>
-            <input type="password" value="{{ password }}" placeholder="Password"/>
+            <input type="password" value="{{.password}}" placeholder="Password"/>
         </div>
         <input type="button" class="fluid ui button" on-click="login" value="Submit"/>
         {{/if}}

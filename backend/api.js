@@ -9,9 +9,9 @@ var
 
 
 router
-    .add('api/auth', function(request, res) {
-        authenticate(request, res);
-    })
+    .add('api/auth', authenticate)
+    .add('api/user/:username', users)
+    .add('api/user', users)
     .add('api', function(request, res) {
         var token = request.body && request.body.token ? request.body.token :
                     request.query && request.query.token ? request.query.token :
@@ -32,9 +32,6 @@ router
         response({
             version: '0.1'
         }, res);
-    })
-    .add('api/user', function(request, res) {
-        users(request, res);        
     });
 
 module.exports = function(request, result) {
